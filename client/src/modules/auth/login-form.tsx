@@ -1,18 +1,27 @@
 import { Link } from "react-router-dom";
-import { FormField } from "./signup-form";
-import {
-  GoogleAuthButton,
-  FormInput,
-  Divider,
-  LoginButton,
-} from "@components/auth/ui";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { GoogleAuthButton, Divider, LoginButton } from "@components/auth/ui";
 
-const form_fields = [
-  { field_title: "Email", field_id: "email", field_type: "email" },
-  { field_title: "Password", field_id: "password", field_type: "password" },
-] as FormField[];
+type LoginFormData = {
+  email: string;
+  password: string;
+};
 
 export default function LoginForm() {
+  const form_schema = yup.object().shape({
+    email: yup.string().email().required(),
+    password: yup.string().required(),
+  });
+
+  const { register, handleSubmit } = useForm<LoginFormData>({
+    resolver: yupResolver(form_schema),
+  });
+
+  const handleFormSubmit = (data: LoginFormData) => {
+    console.log(data);
+  };
   return (
     <div className="relative z-20 mx-auto mt-10 max-w-xs text-black sm:max-w-xl">
       <div className="mb-7 space-y-6 text-center">
@@ -21,16 +30,35 @@ export default function LoginForm() {
         </div>
         <h2 className="text-3xl font-bold sm:text-4xl">Login</h2>
       </div>
-      <form>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="mb-7 space-y-6">
-          {form_fields.map((form) => (
-            <FormInput
-              key={form.field_id}
-              field_id={form.field_id}
-              field_type={form.field_type}
-              field_title={form.field_title}
+          <div className="flex flex-col space-y-4">
+            <label className="font-medium" htmlFor={"email"}>
+              Email
+            </label>
+            <input
+              className="rounded-md border border-grey/60 p-3 outline-grey/75"
+              placeholder="Email"
+              type="email"
+              id="email"
+              required
+              {...register("email")}
             />
-          ))}
+          </div>
+
+          <div className="flex flex-col space-y-4">
+            <label className="font-medium" htmlFor={"password"}>
+              Password
+            </label>
+            <input
+              className="rounded-md border border-grey/60 p-3 outline-grey/75"
+              placeholder="Password"
+              type="password"
+              id="password"
+              required
+              {...register("password")}
+            />
+          </div>
         </div>
         <LoginButton />
         <Divider />
