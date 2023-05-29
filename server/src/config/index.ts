@@ -1,11 +1,17 @@
 import dotenv from "dotenv";
+import { CorsOptions } from "cors";
 import connectDB from "./db";
 
 class Config {
   PORT: number;
+  CORS: CorsOptions;
   constructor() {
     dotenv.config();
     this.PORT = this.getPort();
+    this.CORS = {
+      origin: process.env.CLIENT_URL as string,
+      credentials: true,
+    };
   }
   async init() {
     const db_url = process.env.MONGODB_CLIENT as string;

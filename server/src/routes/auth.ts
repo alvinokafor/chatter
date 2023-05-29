@@ -6,5 +6,6 @@ import { authController } from "../controllers";
 const router = Router();
 
 router.post("/register", validation(registerSchema), authController.Register);
+router.post("/login", authController.Login);
 
 export default router;
