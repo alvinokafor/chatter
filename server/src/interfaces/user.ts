@@ -9,4 +9,5 @@ export interface IUser extends Document {
   //   avatar: string;
   bio: string;
   followersIds: Types.ObjectId[];
+  refreshToken: string;
 }
