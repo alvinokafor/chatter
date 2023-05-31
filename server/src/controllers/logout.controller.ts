@@ -8,7 +8,7 @@ const handleLogout = async (req: Request, res: Response) => {
 
   const user = await User.findOne({ refreshToken });
   if (!user) {
-    res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
+    res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: false });
     res
       .send(204)
       .json({ message: "No user with corresponding refresh token found" });
@@ -16,10 +16,9 @@ const handleLogout = async (req: Request, res: Response) => {
 
   user!.refreshToken = "";
   const response = await user!.save();
-  console.log(response);
 
-  res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: true });
-  res.send(204).json({ message: "Cookie & refresh token cleared" });
+  res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: false });
+  res.sendStatus(204);
 };
 
 export default handleLogout;

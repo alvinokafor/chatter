@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import { CorsOptions } from "cors";
 import connectDB from "./db";
-
 class Config {
   PORT: number;
   CORS: CorsOptions;
