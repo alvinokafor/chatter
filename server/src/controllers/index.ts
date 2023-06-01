@@ -1,7 +1,14 @@
 import handleRefreshToken from "./refreshtoken.controller";
 import handleLogout from "./logout.controller";
 import { handleRegistration, handleLogin } from "./auth.controller";
-import { handleCreatePost } from "./post.controller";
+import {
+  handleCreatePost,
+  handleGetUserPosts,
+  handleGetPost,
+  handleUpdatePost,
+  handleDeletePost,
+  handleGetALlPosts,
+} from "./post.controller";
 
 export {
   handleRefreshToken,
@@ -9,4 +16,9 @@ export {
   handleLogin,
   handleLogout,
   handleCreatePost,
+  handleGetUserPosts,
+  handleGetPost,
+  handleUpdatePost,
+  handleDeletePost,
+  handleGetALlPosts,
 };
