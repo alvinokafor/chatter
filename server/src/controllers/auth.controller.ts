@@ -32,6 +32,7 @@ export const handleRegistration = async (req: Request, res: Response) => {
 };
 
 export const handleLogin = async (req: Request, res: Response) => {
+  const cookies = req.cookies;
   const { email, password } = req.body;
 
   let user = await User.findOne({ email });
@@ -55,6 +56,20 @@ export const handleLogin = async (req: Request, res: Response) => {
       process.env.REFRESH_TOKEN_SECRET as string,
       { expiresIn: "1d" }
     );
+
+    if (cookies?.jwt) {
+      const unauthorisedUser = await User.findOne({
+        refreshToken: cookies?.jwt,
+      });
+      unauthorisedUser!.refreshToken = "";
+      await unauthorisedUser?.save();
+
+      res.clearCookie("jwt", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: false,
+      });
+    }
 
     user!.refreshToken = refreshToken;
     const response = await user!.save();
