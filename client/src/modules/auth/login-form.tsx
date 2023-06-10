@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { GoogleAuthButton, Divider, LoginButton } from "@components/auth/ui";
+import { GoogleAuthButton, Divider, LoginButton } from "@/components/auth/ui";
 
 type LoginFormData = {
   email: string;
@@ -23,7 +23,7 @@ export default function LoginForm() {
     console.log(data);
   };
   return (
-    <div className="relative z-20 mx-auto mt-10 max-w-xs text-black sm:max-w-xl">
+    <div className="relative z-20 mx-auto mt-10 max-w-xs text-black sm:max-w-lg xl:max-w-xl">
       <div className="mb-7 space-y-6 text-center">
         <div className="mt-5 lg:hidden">
           <img className="mx-auto" src="/assets/images/logo-small.svg" alt="" />
@@ -67,7 +67,7 @@ export default function LoginForm() {
 
       <p className="my-6 text-center">
         Dont have an account?{" "}
-        <Link to="/signup">
+        <Link href="/auth/signup">
           <button>
             <strong>Signup</strong>
           </button>
