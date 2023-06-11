@@ -1,3 +1,4 @@
+import { Toaster } from "react-hot-toast";
 import { SignupForm } from "@/modules/auth";
 import { AuthPageLayout, AppLayout } from "@/layouts";
 
@@ -26,6 +27,14 @@ export default function Signup() {
           </div>
         </div>
       </AuthPageLayout>
+      <Toaster
+        toastOptions={{
+          style: {
+            paddingInline: "10px",
+            paddingBlock: "12px",
+          },
+        }}
+      />
     </AppLayout>
   );
 }

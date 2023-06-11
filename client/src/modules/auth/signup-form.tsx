@@ -1,20 +1,25 @@
+import { useEffect } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+
+import { createUser } from "@/api/usersApi";
 import { GoogleAuthButton, SignupButton, Divider } from "@/components/auth/ui";
 
-type RegisterFormData = {
-  firstname: string;
-  lastname: string;
+export type RegisterFormData = {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
 };
 
 export default function SignupForm() {
   const form_schema = yup.object().shape({
-    firstname: yup.string().required("Your first name is required"),
-    lastname: yup.string().required("Your lastname is required"),
+    firstName: yup.string().required("Your first name is required"),
+    lastName: yup.string().required("Your lastname is required"),
     email: yup
       .string()
       .email("Email is not valid")
@@ -22,21 +27,50 @@ export default function SignupForm() {
     password: yup
       .string()
       .min(6, "Password must be a minimum of 6 characters")
-      .max(8, "Password must have a maximum of 8 characters")
+      .max(32, "Password must have a maximum of 32 characters")
       .required("Your password is required"),
   });
 
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    },
     resolver: yupResolver(form_schema),
   });
 
-  const handleFormSubmit = (data: RegisterFormData) => {
-    console.log(data);
+  const createUserMutation = useMutation({
+    mutationFn: createUser,
+    onSuccess(data) {
+      console.log(data.data);
+      toast.success("Registration successful", {
+        duration: 4000,
+        position: "top-center",
+      });
+    },
+    onError(error) {
+      console.log(error);
+      toast.error("An error occurred", {
+        duration: 4000,
+        position: "top-center",
+      });
+    },
+  });
+
+  const handleRegister = (data: RegisterFormData) => {
+    createUserMutation.mutate(data);
   };
+
+  useEffect(() => {
+    reset();
+  }, [createUserMutation.isSuccess]);
 
   return (
     <div className="relative z-20 mx-auto mt-10 max-w-xs text-black sm:max-w-lg xl:max-w-xl">
@@ -49,7 +83,7 @@ export default function SignupForm() {
           Create your account for free and start sharing your stories
         </p>
       </div>
-      <form onSubmit={handleSubmit(handleFormSubmit)}>
+      <form onSubmit={handleSubmit(handleRegister)}>
         <div className="mb-7 space-y-6">
           <div className="flex flex-col space-y-4">
             <label className="font-medium" htmlFor={"firstname"}>
@@ -57,17 +91,17 @@ export default function SignupForm() {
             </label>
             <input
               className={` ${
-                errors?.firstname
+                errors?.firstName
                   ? "border-red-400 outline-red-400"
                   : "border-grey/60 outline-grey/75"
               } rounded-md border p-3 `}
               placeholder="First Name"
               type="text"
               id="firstname"
-              {...register("firstname")}
+              {...register("firstName")}
             />
-            {errors?.firstname && (
-              <p className="text-red-400">{errors.firstname?.message}</p>
+            {errors?.firstName && (
+              <p className="text-red-400">{errors.firstName?.message}</p>
             )}
           </div>
 
@@ -77,17 +111,17 @@ export default function SignupForm() {
             </label>
             <input
               className={` ${
-                errors?.lastname
+                errors?.lastName
                   ? "border-red-400 outline-red-400"
                   : "border-grey/60 outline-grey/75"
               } rounded-md border p-3 `}
               placeholder="Last Name"
               type="text"
               id="lastname"
-              {...register("lastname")}
+              {...register("lastName")}
             />
-            {errors?.lastname && (
-              <p className="text-red-400">{errors.lastname?.message}</p>
+            {errors?.lastName && (
+              <p className="text-red-400">{errors.lastName?.message}</p>
             )}
           </div>
 
@@ -97,7 +131,7 @@ export default function SignupForm() {
             </label>
             <input
               className={` ${
-                errors?.email
+                errors?.email || createUserMutation.isError
                   ? "border-red-400 outline-red-400"
                   : "border-grey/60 outline-grey/75"
               } rounded-md border p-3 `}
@@ -108,6 +142,9 @@ export default function SignupForm() {
             />
             {errors?.email && (
               <p className="text-red-400">{errors.email?.message}</p>
+            )}
+            {createUserMutation.isError && (
+              <p className="text-red-400">Email already exists</p>
             )}
           </div>
 
@@ -132,7 +169,7 @@ export default function SignupForm() {
           </div>
         </div>
 
-        <SignupButton />
+        <SignupButton isPending={createUserMutation.isLoading} />
         <Divider />
         <GoogleAuthButton />
       </form>

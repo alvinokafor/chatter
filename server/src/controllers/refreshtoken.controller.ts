@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 const handleRefreshToken = async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  if (!cookies?.jwt) res.send(401).json({ message: "No cookies set" });
+  if (!cookies?.jwt) return res.send(401).json({ message: "No cookies set" });
   const refreshToken = cookies.jwt;
   //clear the refresh token cookie from the browser
   res.clearCookie("jwt", { httpOnly: true, sameSite: "none", secure: false });

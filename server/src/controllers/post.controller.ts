@@ -21,7 +21,7 @@ export const handleCreatePost = async (req: Request, res: Response) => {
 
 export const handleGetUserPosts = async (req: Request, res: Response) => {
   const userId = req.params.id;
-  if (!userId) res.sendStatus(401);
+  if (!userId) return res.sendStatus(401);
 
   try {
     const userPosts = await Post.find({ userId: userId });
@@ -34,7 +34,7 @@ export const handleGetUserPosts = async (req: Request, res: Response) => {
 
 export const handleGetPost = async (req: Request, res: Response) => {
   const postId = req.params.id;
-  if (!postId) res.sendStatus(404);
+  if (!postId) return res.sendStatus(404);
 
   try {
     const post = await Post.findOne({ _id: postId });
@@ -48,7 +48,7 @@ export const handleGetPost = async (req: Request, res: Response) => {
 export const handleUpdatePost = async (req: Request, res: Response) => {
   const { title, body } = req.body;
   const postId = req.params.id;
-  if (!postId) res.sendStatus(404);
+  if (!postId) return res.sendStatus(404);
 
   try {
     const post = await Post.findOne({ _id: postId });
@@ -67,7 +67,7 @@ export const handleUpdatePost = async (req: Request, res: Response) => {
 
 export const handleDeletePost = async (req: Request, res: Response) => {
   const postId = req.params.id;
-  if (!postId) res.sendStatus(404);
+  if (!postId) return res.sendStatus(404);
 
   try {
     const post = await Post.findOne({ _id: postId });
