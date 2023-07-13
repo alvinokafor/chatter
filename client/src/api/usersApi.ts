@@ -10,6 +10,7 @@ export const ping = async () => {
   return res.data;
 };
 
+//creates user in db
 export const createUser = async ({
   firstName,
   lastName,
